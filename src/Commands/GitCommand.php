@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace IBroStudio\Git\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class GitCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-git';
 
     public $description = 'My command';
 
