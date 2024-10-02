@@ -1,0 +1,2 @@
+casts:
+    - changelog.included_types: AsEnumCollection(of: \IBroStudio\Git\Enums\GitCommitTypes)
