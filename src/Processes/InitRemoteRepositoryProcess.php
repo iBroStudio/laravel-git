@@ -11,7 +11,7 @@ class InitRemoteRepositoryProcess extends Process
 {
     protected array $tasks = [
         DirectoryMustNotExistTask::class,
-        //InitRemoteRepositoryTask::class,
-        //CloneRepositoryTask::class,
+        InitRemoteRepositoryTask::class,
+        CloneRepositoryTask::class,
     ];
 }
