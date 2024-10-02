@@ -37,3 +37,17 @@ it('can process remote repository init', function () {
 
     File::deleteDirectory($repository->properties->path);
 });
+
+it('throws an error if directory project exists already', function () {
+    InitRemoteRepositoryProcess::handleWith([
+        new RepositoryPropertiesData(
+            name: 'test',
+            branch: config('git.default.branch'),
+            owner: config('git.testing.github_username'),
+            provider: GitProvidersEnum::GITHUB,
+            remote: config('git.default.remote'),
+            localParentDirectory: config('git.testing.directory'),
+            visibility: GitRepositoryVisibilities::PRIVATE,
+        ),
+    ]);
+})->throws(\RuntimeException::class);
