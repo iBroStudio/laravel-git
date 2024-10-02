@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
  
+## [1.1.2](https://github.com/iBroStudio/laravel-git/compare/v1.1.1...HEAD) (2024-10-02)
+### Features
+* add WaitForTemplateCommitTask in init process ([f11f97](https://github.com/iBroStudio/laravel-git/commit/f11f97662ebf1046073439bf18ff6b1c50bde957))
+
+---
+
 ## [1.1.1](https://github.com/iBroStudio/laravel-git/compare/v1.1.0...HEAD) (2024-10-02)
 ### Bug Fixes
 * uncomment init repository tasks ([8fba11](https://github.com/iBroStudio/laravel-git/commit/8fba111951109134fabffae26c9eb8491ede6c81))
