@@ -5,7 +5,7 @@ namespace IBroStudio\Git\GitProviders;
 use IBroStudio\Git\Contracts\GitProviderContract;
 use IBroStudio\Git\Contracts\GitProviderRepositoryContract;
 use IBroStudio\Git\Contracts\GitProviderUserContract;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\Enums\GitProvidersEnum;
 
 abstract class GitProvider implements GitProviderContract
@@ -20,7 +20,7 @@ abstract class GitProvider implements GitProviderContract
             ->get($this->providerKey->value);
     }
 
-    public function repository(RepositoryPropertiesData $properties): GitProviderRepositoryContract
+    public function repository(RepositoryData $properties): GitProviderRepositoryContract
     {
         return app(GitProviderRepositoryContract::class, ['properties' => $properties])
             ->get($this->providerKey->value);

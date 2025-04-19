@@ -3,7 +3,7 @@
 namespace IBroStudio\Git;
 
 use IBroStudio\DataRepository\ValueObjects\GitSshUrl;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\Processes\InitRemoteRepositoryProcess;
 use IBroStudio\Git\Processes\Payloads\InitRemoteRepositoryPayload;
 use Illuminate\Support\Arr;
@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Process;
 class GitRepository
 {
     public function __construct(
-        public RepositoryPropertiesData $properties
+        public RepositoryData $properties
     ) {}
 
     public static function init(
@@ -28,7 +28,7 @@ class GitRepository
     public static function open(string $path): GitRepository
     {
         return new self(
-            RepositoryPropertiesData::from(realpath($path))
+            RepositoryData::from(realpath($path))
         );
     }
 
@@ -42,7 +42,7 @@ class GitRepository
             ->throw();
 
         return new self(
-            RepositoryPropertiesData::from($path)
+            RepositoryData::from($path)
         );
     }
 

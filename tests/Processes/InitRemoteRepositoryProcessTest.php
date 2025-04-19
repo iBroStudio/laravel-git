@@ -1,8 +1,8 @@
 <?php
 
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\Enums\GitProvidersEnum;
-use IBroStudio\Git\Enums\GitRepositoryVisibilities;
+use IBroStudio\Git\Enums\GitRepositoryVisibilitiesEnum;
 use IBroStudio\Git\GitRepository;
 use IBroStudio\Git\Processes\InitRemoteRepositoryProcess;
 use IBroStudio\Git\Processes\Payloads\InitRemoteRepositoryPayload;
@@ -12,14 +12,14 @@ it('can process remote repository init', function () {
     $process = (new InitRemoteRepositoryProcess)
         ->run(
             new InitRemoteRepositoryPayload(
-                new RepositoryPropertiesData(
+                new RepositoryData(
                     name: fake()->word(),
                     branch: config('git.default.branch'),
                     owner: config('git.testing.github_username'),
                     provider: GitProvidersEnum::GITHUB,
                     remote: config('git.default.remote'),
                     localParentDirectory: config('git.testing.directory'),
-                    visibility: GitRepositoryVisibilities::PRIVATE,
+                    visibility: GitRepositoryVisibilitiesEnum::PRIVATE,
                 )
             )
         );
@@ -40,14 +40,14 @@ it('can process remote repository init', function () {
 
 it('throws an error if directory project exists already', function () {
     InitRemoteRepositoryProcess::handleWith([
-        new RepositoryPropertiesData(
+        new RepositoryData(
             name: 'test',
             branch: config('git.default.branch'),
             owner: config('git.testing.github_username'),
             provider: GitProvidersEnum::GITHUB,
             remote: config('git.default.remote'),
             localParentDirectory: config('git.testing.directory'),
-            visibility: GitRepositoryVisibilities::PRIVATE,
+            visibility: GitRepositoryVisibilitiesEnum::PRIVATE,
         ),
     ]);
 })->throws(\RuntimeException::class);

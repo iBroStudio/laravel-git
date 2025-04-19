@@ -3,9 +3,9 @@
 use IBroStudio\Git\Contracts\GitProviderContract;
 use IBroStudio\Git\Contracts\GitProviderRepositoryContract;
 use IBroStudio\Git\Contracts\GitProviderUserContract;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\Enums\GitProvidersEnum;
-use IBroStudio\Git\Enums\GitRepositoryVisibilities;
+use IBroStudio\Git\Enums\GitRepositoryVisibilitiesEnum;
 use IBroStudio\Git\GitProviders\Github\GithubProvider;
 use IBroStudio\Git\GitProviders\Github\GithubRepository;
 use IBroStudio\Git\GitProviders\Github\GithubUser;
@@ -37,14 +37,14 @@ it('gives access to provider user', function () {
 it('gives access to provider repository', function () {
     $provider = app(GithubProvider::class);
     $repository = $provider->repository(
-        properties: new RepositoryPropertiesData(
+        properties: new RepositoryData(
             name: fake()->slug(2),
             remote: config('git.default.remote'),
             branch: config('git.default.branch'),
             provider: GitProvidersEnum::GITHUB,
             owner: config('git.testing.github_username'),
             localParentDirectory: config('git.testing.directory'),
-            visibility: GitRepositoryVisibilities::PRIVATE,
+            visibility: GitRepositoryVisibilitiesEnum::PRIVATE,
         )
     );
 

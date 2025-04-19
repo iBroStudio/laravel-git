@@ -2,7 +2,7 @@
 
 namespace IBroStudio\Git\Enums;
 
-enum GitRepositoryVisibilities: string
+enum GitRepositoryVisibilitiesEnum: string
 {
     case PUBLIC = 'public';
     case PRIVATE = 'private';

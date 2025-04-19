@@ -3,6 +3,7 @@
 namespace IBroStudio\Git;
 
 use IBroStudio\Git\Contracts\ChangelogContract;
+use IBroStudio\Git\Contracts\GitProviderConnectorContract;
 use IBroStudio\Git\Contracts\GitProviderContract;
 use IBroStudio\Git\Contracts\GitProviderRepositoryContract;
 use IBroStudio\Git\Contracts\GitProviderUserContract;
@@ -10,6 +11,7 @@ use IBroStudio\Git\Enums\GitProvidersEnum;
 use IBroStudio\Git\GitProviders\Github\GithubProvider;
 use IBroStudio\Git\GitProviders\Github\GithubRepository;
 use IBroStudio\Git\GitProviders\Github\GithubUser;
+use IBroStudio\Git\Integrations\Github\GithubConnector;
 use IBroStudio\NeonConfig\Concerns\UseNeonConfig;
 use Illuminate\Support\Facades\Config;
 use Spatie\LaravelPackageTools\Package;
@@ -35,6 +37,18 @@ class GitServiceProvider extends PackageServiceProvider
 
     private function bindContracts(): void
     {
+        $this->app->bind(
+            GitProviderConnectorContract::class,
+            function () {
+                return collect([
+                    GitProvidersEnum::GITHUB->value => new GithubConnector(
+                        username: config('git.testing.github.username'),
+                        token: config('git.testing.github.token'),
+                    ),
+                ]);
+            }
+        );
+
         app()->bind(
             GitProviderContract::class,
             function ($app) {

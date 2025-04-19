@@ -6,7 +6,7 @@ use Github\ResultPager;
 use IBroStudio\Git\Contracts\GitProviderUserContract;
 use IBroStudio\Git\Data\GitUserInfosData;
 use IBroStudio\Git\Data\GitUserOrganizationData;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\GitProviders\GitProviderUser;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -49,7 +49,7 @@ class GithubUser extends GitProviderUser implements GitProviderUserContract
 
         return collect($request)
             ->map(function (array $repository) {
-                return RepositoryPropertiesData::from($repository);
+                return RepositoryData::from($repository);
             });
     }
 }

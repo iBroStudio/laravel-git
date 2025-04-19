@@ -3,7 +3,7 @@
 namespace IBroStudio\Git\Processes\Payloads;
 
 use IBroStudio\Git\Data\GitCommitData;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\GitRepository;
 use IBroStudio\Git\Processes\Payloads\Concerns\CommitPayloadMethods;
 use IBroStudio\Git\Processes\Payloads\Concerns\RepositoryPayloadMethods;
@@ -19,6 +19,6 @@ class RebuildChangelogPayload implements CommitPayload, Payload, RepositoryPaylo
     public function __construct(
         protected GitRepository $repository,
         protected ?GitCommitData $commitData = null,
-        protected ?RepositoryPropertiesData $repositoryProperties = null
+        protected ?RepositoryData $repositoryProperties = null
     ) {}
 }

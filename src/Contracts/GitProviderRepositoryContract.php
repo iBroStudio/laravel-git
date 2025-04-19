@@ -2,12 +2,12 @@
 
 namespace IBroStudio\Git\Contracts;
 
-use IBroStudio\Git\Data\RepositoryPropertiesData;
-use IBroStudio\Git\Enums\GitRepositoryVisibilities;
+use IBroStudio\Git\Data\RepositoryData;
+use IBroStudio\Git\Enums\GitRepositoryVisibilitiesEnum;
 
 interface GitProviderRepositoryContract
 {
-    public function properties(): RepositoryPropertiesData;
+    public function properties(): RepositoryData;
 
     public function init(): GitProviderRepositoryContract;
 
@@ -15,7 +15,7 @@ interface GitProviderRepositoryContract
 
     public function get(): GitProviderRepositoryContract;
 
-    public function visibility(GitRepositoryVisibilities $visibility): GitProviderRepositoryContract;
+    public function visibility(GitRepositoryVisibilitiesEnum $visibility): GitProviderRepositoryContract;
 
     public function delete(): bool;
 

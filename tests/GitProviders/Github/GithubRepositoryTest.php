@@ -2,9 +2,9 @@
 
 use IBroStudio\DataRepository\ValueObjects\GitSshUrl;
 use IBroStudio\Git\Contracts\GitProviderRepositoryContract;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\Enums\GitProvidersEnum;
-use IBroStudio\Git\Enums\GitRepositoryVisibilities;
+use IBroStudio\Git\Enums\GitRepositoryVisibilitiesEnum;
 use IBroStudio\Git\Exceptions\GitRepositoryMissingPropertyException;
 use IBroStudio\Git\GitProviders\Github\GithubRepository;
 use IBroStudio\Git\GitRepository;
@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\File;
 it('can init a repository', function () {
     clearGithubRepository();
     $repository = (new GithubRepository(
-        properties: new RepositoryPropertiesData(
+        properties: new RepositoryData(
             name: 'test-github-repository',
             branch: config('git.default.branch'),
             owner: config('git.testing.github_username'),
             provider: GitProvidersEnum::GITHUB,
             remote: config('git.default.remote'),
             localParentDirectory: config('git.testing.directory'),
-            visibility: GitRepositoryVisibilities::PRIVATE,
+            visibility: GitRepositoryVisibilitiesEnum::PRIVATE,
         )
     ))->init();
 
@@ -47,8 +47,8 @@ it('can clone a repository', function () {
 it('can update the repository visibility', function () {
     $repository = GitRepository::open(config('git.testing.directory').'/test-github-repository');
     $current = $repository->properties->visibility;
-    $new = $current === GitRepositoryVisibilities::PUBLIC ?
-        GitRepositoryVisibilities::PRIVATE : GitRepositoryVisibilities::PUBLIC;
+    $new = $current === GitRepositoryVisibilitiesEnum::PUBLIC ?
+        GitRepositoryVisibilitiesEnum::PRIVATE : GitRepositoryVisibilitiesEnum::PUBLIC;
 
     $repository
         ->properties
@@ -84,14 +84,14 @@ it('can init a repository from a template', function () {
     clearGithubTemplateRepository();
     $template = GitSshUrl::make(config('git.templates')[0]);
     $repository = (new GithubRepository(
-        properties: new RepositoryPropertiesData(
+        properties: new RepositoryData(
             name: 'test-github-repository-with-template',
             branch: config('git.default.branch'),
             owner: config('git.testing.github_username'),
             provider: GitProvidersEnum::GITHUB,
             remote: config('git.default.remote'),
             localParentDirectory: config('git.testing.directory'),
-            visibility: GitRepositoryVisibilities::PRIVATE,
+            visibility: GitRepositoryVisibilitiesEnum::PRIVATE,
             templateOwner: $template->username(),
             templateRepo: $template->repository(),
         )
@@ -103,14 +103,14 @@ it('can init a repository from a template', function () {
 it('can not init a repository from a template if templateOwner is missing', function () {
     $template = GitSshUrl::make(config('git.templates')[0]);
     (new GithubRepository(
-        properties: new RepositoryPropertiesData(
+        properties: new RepositoryData(
             name: 'test-github-repository-with-template',
             branch: config('git.default.branch'),
             owner: config('git.testing.github_username'),
             provider: GitProvidersEnum::GITHUB,
             remote: config('git.default.remote'),
             localParentDirectory: config('git.testing.directory'),
-            visibility: GitRepositoryVisibilities::PRIVATE,
+            visibility: GitRepositoryVisibilitiesEnum::PRIVATE,
             templateRepo: $template->repository(),
         )
     ))->initFromTemplate();
@@ -123,14 +123,14 @@ it('can not init a repository from a template if templateOwner is missing', func
 it('can not init a repository from a template if templateRepo is missing', function () {
     $template = GitSshUrl::make(config('git.templates')[0]);
     (new GithubRepository(
-        properties: new RepositoryPropertiesData(
+        properties: new RepositoryData(
             name: 'test-github-repository-with-template',
             branch: config('git.default.branch'),
             owner: config('git.testing.github_username'),
             provider: GitProvidersEnum::GITHUB,
             remote: config('git.default.remote'),
             localParentDirectory: config('git.testing.directory'),
-            visibility: GitRepositoryVisibilities::PRIVATE,
+            visibility: GitRepositoryVisibilitiesEnum::PRIVATE,
             templateOwner: $template->username(),
         )
     ))->initFromTemplate();
@@ -143,14 +143,14 @@ it('can not init a repository from a template if templateRepo is missing', funct
 it('can delete a repository built from a template', function () {
     expect(
         (new GithubRepository(
-            properties: new RepositoryPropertiesData(
+            properties: new RepositoryData(
                 name: 'test-github-repository-with-template',
                 branch: config('git.default.branch'),
                 owner: config('git.testing.github_username'),
                 provider: GitProvidersEnum::GITHUB,
                 remote: config('git.default.remote'),
                 localParentDirectory: config('git.testing.directory'),
-                visibility: GitRepositoryVisibilities::PRIVATE,
+                visibility: GitRepositoryVisibilitiesEnum::PRIVATE,
             )
         ))->delete()
     )->toBeTrue();

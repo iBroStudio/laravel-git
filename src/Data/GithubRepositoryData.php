@@ -5,7 +5,7 @@ namespace IBroStudio\Git\Data;
 use IBroStudio\DataRepository\ValueObjects\GitSshUrl;
 use IBroStudio\Git\Contracts\GitProviderRepositoryDataContract;
 use IBroStudio\Git\Enums\GitProvidersEnum;
-use IBroStudio\Git\Enums\GitRepositoryVisibilities;
+use IBroStudio\Git\Enums\GitRepositoryVisibilitiesEnum;
 use Spatie\LaravelData\Attributes\Computed;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
@@ -19,15 +19,15 @@ class GithubRepositoryData extends Data implements GitProviderRepositoryDataCont
     public ?string $templateRepo = null;
 
     public function __construct(
-        public string $name,
-        public string|array $owner,
-        public GitSshUrl|string $ssh_url,
+        public string                               $name,
+        public string|array                         $owner,
+        public GitSshUrl|string                     $ssh_url,
         #[MapInputName('default_branch')]
-        public string $branch,
-        public GitRepositoryVisibilities|string $visibility,
-        public string $html_url,
-        public GitProvidersEnum $provider = GitProvidersEnum::GITHUB,
-        public array $template_repository = [],
+        public string                               $branch,
+        public GitRepositoryVisibilitiesEnum|string $visibility,
+        public string                               $html_url,
+        public GitProvidersEnum                     $provider = GitProvidersEnum::GITHUB,
+        public array                                $template_repository = [],
         //public string $remote = 'origin',
     ) {
         if (is_array($this->owner)) {
@@ -35,11 +35,11 @@ class GithubRepositoryData extends Data implements GitProviderRepositoryDataCont
         }
 
         if (is_string($this->ssh_url)) {
-            $this->ssh_url = GitSshUrl::make($this->ssh_url);
+            $this->ssh_url = GitSshUrl::from($this->ssh_url);
         }
 
         if (is_string($this->visibility)) {
-            $this->visibility = GitRepositoryVisibilities::from($this->visibility);
+            $this->visibility = GitRepositoryVisibilitiesEnum::from($this->visibility);
         }
 
         if (count($this->template_repository)) {

@@ -2,14 +2,14 @@
 
 namespace IBroStudio\Git\Actions;
 
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use Spatie\QueueableAction\QueueableAction;
 
 final class InitRemoteRepositoryAction
 {
     use QueueableAction;
 
-    public function execute(RepositoryPropertiesData $propertiesData): RepositoryPropertiesData
+    public function execute(RepositoryData $propertiesData): RepositoryData
     {
         $repository = $propertiesData
             ->provider

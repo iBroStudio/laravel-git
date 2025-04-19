@@ -2,7 +2,7 @@
 
 namespace IBroStudio\Git\Processes\Payloads;
 
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\Enums\EnvironmentTypes;
 use IBroStudio\Git\GitRepository;
 use IBroStudio\Git\Processes\Payloads\Concerns\EnvironmentPayloadMethods;
@@ -17,7 +17,7 @@ class DeployPayload implements EnvironmentPayload, RepositoryPayload
 
     public function __construct(
         protected EnvironmentTypes $environmentType,
-        protected GitRepository $repository,
-        protected ?RepositoryPropertiesData $repositoryProperties = null,
+        protected GitRepository    $repository,
+        protected ?RepositoryData  $repositoryProperties = null,
     ) {}
 }

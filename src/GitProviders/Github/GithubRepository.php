@@ -5,7 +5,7 @@ namespace IBroStudio\Git\GitProviders\Github;
 use IBroStudio\Git\Contracts\GitProviderRepositoryContract;
 use IBroStudio\Git\Contracts\GitReleaseContract;
 use IBroStudio\Git\Data\GithubRepositoryData;
-use IBroStudio\Git\Enums\GitRepositoryVisibilities;
+use IBroStudio\Git\Enums\GitRepositoryVisibilitiesEnum;
 use IBroStudio\Git\Exceptions\GitRepositoryMissingPropertyException;
 use IBroStudio\Git\GitProviders\GitProviderRepository;
 
@@ -21,7 +21,7 @@ class GithubRepository extends GitProviderRepository implements GitProviderRepos
             ...array_merge(
                 [
                     'name' => $this->properties->name,
-                    'public' => $this->properties->visibility === GitRepositoryVisibilities::PUBLIC,
+                    'public' => $this->properties->visibility === GitRepositoryVisibilitiesEnum::PUBLIC,
                 ],
                 $this->properties->owner
                     && $this->properties->owner !== $this->properties->provider->user()->infos()->name
@@ -53,8 +53,8 @@ class GithubRepository extends GitProviderRepository implements GitProviderRepos
             ]
         );
 
-        if ($this->properties->visibility === GitRepositoryVisibilities::PRIVATE) {
-            return $this->visibility(GitRepositoryVisibilities::PRIVATE);
+        if ($this->properties->visibility === GitRepositoryVisibilitiesEnum::PRIVATE) {
+            return $this->visibility(GitRepositoryVisibilitiesEnum::PRIVATE);
         }
 
         return $this->update(GithubRepositoryData::from($request));
@@ -65,13 +65,13 @@ class GithubRepository extends GitProviderRepository implements GitProviderRepos
         return new GithubRelease($this);
     }
 
-    public function visibility(GitRepositoryVisibilities $visibility): GitProviderRepositoryContract
+    public function visibility(GitRepositoryVisibilitiesEnum $visibility): GitProviderRepositoryContract
     {
         $request = $this->properties->provider->api()->repo()
             ->update(
                 username: $this->properties->owner,
                 repository: $this->properties->name,
-                values: ['private' => $visibility === GitRepositoryVisibilities::PRIVATE]
+                values: ['private' => $visibility === GitRepositoryVisibilitiesEnum::PRIVATE]
             );
 
         return $this->update(GithubRepositoryData::from($request));

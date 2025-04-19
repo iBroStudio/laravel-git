@@ -2,7 +2,7 @@
 
 namespace IBroStudio\Git\Processes\Payloads\Concerns;
 
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\GitRepository;
 
 trait RepositoryPayloadMethods
@@ -17,12 +17,12 @@ trait RepositoryPayloadMethods
         return $this->repository;
     }
 
-    public function setRepositoryProperties(RepositoryPropertiesData $repositoryProperties): void
+    public function setRepositoryProperties(RepositoryData $repositoryProperties): void
     {
         $this->repositoryProperties = $repositoryProperties;
     }
 
-    public function getRepositoryProperties(): ?RepositoryPropertiesData
+    public function getRepositoryProperties(): ?RepositoryData
     {
         return $this->repositoryProperties;
     }

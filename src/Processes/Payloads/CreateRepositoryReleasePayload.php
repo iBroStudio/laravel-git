@@ -5,7 +5,7 @@ namespace IBroStudio\Git\Processes\Payloads;
 use IBroStudio\DataRepository\ValueObjects\SemanticVersion;
 use IBroStudio\Git\Data\GitCommitData;
 use IBroStudio\Git\Data\GitReleaseData;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\GitRepository;
 use IBroStudio\Git\Processes\Payloads\Concerns\CommitPayloadMethods;
 use IBroStudio\Git\Processes\Payloads\Concerns\RepositoryPayloadMethods;
@@ -24,7 +24,7 @@ class CreateRepositoryReleasePayload implements BumpVersionPayload, CommitPayloa
         protected GitRepository $repository,
         protected GitReleaseData $releaseData,
         protected ?GitCommitData $commitData = null,
-        protected ?RepositoryPropertiesData $repositoryProperties = null
+        protected ?RepositoryData $repositoryProperties = null
     ) {}
 
     public function getReleaseData(): GitReleaseData

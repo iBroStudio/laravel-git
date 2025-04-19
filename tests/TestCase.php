@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Saloon\Laravel\SaloonServiceProvider;
 use Spatie\LaravelData\LaravelDataServiceProvider;
 
 class TestCase extends Orchestra
@@ -22,6 +23,7 @@ class TestCase extends Orchestra
             GitServiceProvider::class,
             GitHubServiceProvider::class,
             PipedTasksServiceProvider::class,
+            SaloonServiceProvider::class,
         ];
     }
 
@@ -31,22 +33,20 @@ class TestCase extends Orchestra
             throw new \RuntimeException('git.testing.php is missing in config folder.');
         }
 
-        Config::set('git.testing', require __DIR__.'/../config/git.testing.php');
-
         Config::set(
             'github.connections.main.token',
-            Config::get('git.testing.github_token')
+            config('git.testing.github.token')
         );
 
-        Process::path(config('git.testing.repository'))
+        Process::path(config('git.testing.directory') . '/' . config('git.testing.repository'))
             ->run('git restore . --worktree --staged')
             ->throw();
 
-        Process::path(config('git.testing.repository'))
+        Process::path(config('git.testing.directory') . '/' . config('git.testing.repository'))
             ->run('git fetch origin --tags')
             ->throw();
 
-        Process::path(config('git.testing.repository'))
+        Process::path(config('git.testing.directory') . '/' . config('git.testing.repository'))
             ->run('git pull origin main --rebase')
             ->throw();
     }

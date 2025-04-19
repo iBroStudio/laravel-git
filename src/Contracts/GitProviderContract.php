@@ -2,7 +2,7 @@
 
 namespace IBroStudio\Git\Contracts;
 
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 
 interface GitProviderContract
 {
@@ -10,5 +10,5 @@ interface GitProviderContract
 
     public function user(): GitProviderUserContract;
 
-    public function repository(RepositoryPropertiesData $properties): GitProviderRepositoryContract;
+    public function repository(RepositoryData $properties): GitProviderRepositoryContract;
 }

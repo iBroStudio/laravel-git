@@ -2,7 +2,7 @@
 
 namespace IBroStudio\Git\Processes\Payloads\Contracts;
 
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\GitRepository;
 
 interface RepositoryPayload
@@ -11,7 +11,7 @@ interface RepositoryPayload
 
     public function getRepository(): ?GitRepository;
 
-    public function setRepositoryProperties(RepositoryPropertiesData $repositoryProperties): void;
+    public function setRepositoryProperties(RepositoryData $repositoryProperties): void;
 
-    public function getRepositoryProperties(): ?RepositoryPropertiesData;
+    public function getRepositoryProperties(): ?RepositoryData;
 }

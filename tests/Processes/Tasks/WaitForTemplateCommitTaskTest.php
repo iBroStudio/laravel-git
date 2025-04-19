@@ -2,7 +2,7 @@
 
 use IBroStudio\Git\GitRepository;
 use IBroStudio\Git\Processes\Tasks\WaitForTemplateCommitTask;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\Processes\InitRemoteRepositoryProcess;
 use IBroStudio\Git\Processes\Payloads\InitRemoteRepositoryPayload;
 

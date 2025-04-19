@@ -2,7 +2,7 @@
 
 namespace IBroStudio\Git\Processes\Payloads;
 
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\GitRepository;
 use IBroStudio\Git\Processes\Payloads\Concerns\RepositoryPayloadMethods;
 use IBroStudio\Git\Processes\Payloads\Contracts\RepositoryPayload;
@@ -13,7 +13,7 @@ class InitRemoteRepositoryPayload implements Payload, RepositoryPayload
     use RepositoryPayloadMethods;
 
     public function __construct(
-        protected RepositoryPropertiesData $repositoryProperties,
+        protected RepositoryData $repositoryProperties,
         protected ?GitRepository $repository = null
     ) {}
 }

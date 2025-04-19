@@ -2,7 +2,7 @@
 
 use IBroStudio\Git\Data\GitUserInfosData;
 use IBroStudio\Git\Data\GitUserOrganizationData;
-use IBroStudio\Git\Data\RepositoryPropertiesData;
+use IBroStudio\Git\Data\RepositoryData;
 use IBroStudio\Git\GitProviders\Github\GithubProvider;
 use IBroStudio\Git\GitProviders\Github\GithubUser;
 
@@ -32,5 +32,5 @@ it('can list user repositories', function () {
     // @phpstan-ignore-next-line
     expect($repositories)->toBeCollection()
         ->and($repositories->first())
-        ->toBeInstanceOf(RepositoryPropertiesData::class);
+        ->toBeInstanceOf(RepositoryData::class);
 });

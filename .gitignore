@@ -11,3 +11,4 @@ testbench.yaml
 vendor
 node_modules
 config/git.testing.php
+git.neon
