@@ -1,43 +1,28 @@
 <?php
 
-use Carbon\Carbon;
-use IBroStudio\Git\Data\GitCommitData;
-use IBroStudio\Git\Enums\GitCommitTypes;
-use IBroStudio\Git\GitRepository;
+declare(strict_types=1);
+
+use IBroStudio\Git\Commit;
+use IBroStudio\Git\Dto\RepositoryDto\CommitDto;
+use IBroStudio\Git\Enums\CommitTypeEnum;
 use IBroStudio\Git\Processes\CreateCommitProcess;
-use IBroStudio\Git\Processes\Payloads\CreateCommitPayload;
-use Illuminate\Support\Facades\File;
+use IBroStudio\Tasks\Enums\ProcessStatesEnum;
+use IBroStudio\Tasks\Enums\TaskStatesEnum;
+use Illuminate\Support\Facades\Process;
 
-it('can process a commit', function () {
-    $repository = GitRepository::open(config('git.testing.repository'));
-    $message = 'test commit '.Carbon::now()->format('Y-m-d H:i:s');
-    $payload = new CreateCommitPayload(
-        repository: $repository,
-        commitData: new GitCommitData(
-            type: GitCommitTypes::TEST,
-            message: $message,
-        )
-    );
+it('can run commit process', function () {
+    Process::fake();
+    $payload = $this->repository->updateDto([
+        'commit' => CommitDto::from(CommitTypeEnum::TEST, 'test commit '.Carbon\CarbonImmutable::now()->format('Y-m-d H:i:s')),
+    ]);
 
-    $file = fake()->word().'.txt';
-    File::put(
-        path: config('git.testing.repository').'/'.$file,
-        contents: 'test'
-    );
+    $commitMock = Mockery::mock(Commit::class, [$payload]);
+    $commitMock
+        ->shouldReceive('add')
+        ->with($payload);
 
-    $process = (new CreateCommitProcess)
-        ->run(
-            new CreateCommitPayload(
-                repository: $payload->getRepository(),
-                commitData: $payload->getCommitData()
-            )
-        );
+    $process = $this->repository->process(CreateCommitProcess::class, $payload);
 
-    $commit = $process->getCommitData();
-
-    expect($commit)->toBeInstanceOf(GitCommitData::class)
-        ->and($commit->message)->toEqual($message);
-
-    $repository->commit()->undo();
-    File::delete($file);
+    expect($process->state)->toBe(ProcessStatesEnum::COMPLETED)
+        ->and($process->tasks)->each(fn ($task) => $task->state->toBe(TaskStatesEnum::COMPLETED));
 });

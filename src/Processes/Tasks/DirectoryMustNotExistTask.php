@@ -1,19 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IBroStudio\Git\Processes\Tasks;
 
-use Closure;
-use IBroStudio\Git\Processes\Payloads\Contracts\RepositoryPayload;
+use IBroStudio\Git\Repository;
+use IBroStudio\Tasks\Contracts\PayloadContract;
+use IBroStudio\Tasks\Exceptions\AbortTaskAndProcessException;
+use IBroStudio\Tasks\Models\Task;
 use Illuminate\Support\Facades\File;
+use Parental\HasParent;
 
-final readonly class DirectoryMustNotExistTask
+class DirectoryMustNotExistTask extends Task
 {
-    public function __invoke(RepositoryPayload $payload, Closure $next): mixed
+    use HasParent;
+
+    /**
+     * @param  Repository  $payload
+     */
+    public function execute(PayloadContract $payload): PayloadContract|array
     {
-        if (File::isDirectory($payload->getRepositoryProperties()->path)) {
-            throw new \RuntimeException("Directory '{$payload->getRepositoryProperties()->path}' already exists.");
+        if (File::isDirectory($payload->path)) {
+            throw new AbortTaskAndProcessException($this, "Directory '{$payload->path}' already exists.");
         }
 
-        return $next($payload);
+        return $payload;
     }
 }

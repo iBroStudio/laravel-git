@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IBroStudio\Git\Contracts;
 
 use IBroStudio\DataRepository\ValueObjects\SemanticVersion;
-use IBroStudio\Git\Data\GitReleaseData;
+use IBroStudio\Git\Dto\GitReleaseData;
 use IBroStudio\Git\GitRepository;
 use Illuminate\Support\Collection;
 

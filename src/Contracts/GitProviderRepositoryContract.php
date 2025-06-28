@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IBroStudio\Git\Contracts;
 
-use IBroStudio\Git\Data\RepositoryData;
+use IBroStudio\Git\Dto\RepositoryDto;
 use IBroStudio\Git\Enums\GitRepositoryVisibilitiesEnum;
 
 interface GitProviderRepositoryContract
 {
-    public function properties(): RepositoryData;
+    public function properties(): RepositoryDto;
 
-    public function init(): GitProviderRepositoryContract;
+    public function init(): self;
 
-    public function initFromTemplate(): GitProviderRepositoryContract;
+    public function initFromTemplate(): self;
 
-    public function get(): GitProviderRepositoryContract;
+    public function get(): self;
 
-    public function visibility(GitRepositoryVisibilitiesEnum $visibility): GitProviderRepositoryContract;
+    public function visibility(GitRepositoryVisibilitiesEnum $visibility): self;
 
     public function delete(): bool;
 

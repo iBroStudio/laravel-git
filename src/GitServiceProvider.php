@@ -1,19 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IBroStudio\Git;
 
-use IBroStudio\Git\Contracts\ChangelogContract;
+use IBroStudio\DataObjects\Enums\GitProvidersEnum;
 use IBroStudio\Git\Contracts\GitProviderConnectorContract;
-use IBroStudio\Git\Contracts\GitProviderContract;
-use IBroStudio\Git\Contracts\GitProviderRepositoryContract;
-use IBroStudio\Git\Contracts\GitProviderUserContract;
-use IBroStudio\Git\Enums\GitProvidersEnum;
-use IBroStudio\Git\GitProviders\Github\GithubProvider;
-use IBroStudio\Git\GitProviders\Github\GithubRepository;
-use IBroStudio\Git\GitProviders\Github\GithubUser;
 use IBroStudio\Git\Integrations\Github\GithubConnector;
 use IBroStudio\NeonConfig\Concerns\UseNeonConfig;
-use Illuminate\Support\Facades\Config;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -30,9 +24,9 @@ class GitServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->bindContracts();
-
         $this->loadConfig();
+
+        $this->bindContracts();
     }
 
     private function bindContracts(): void
@@ -42,49 +36,20 @@ class GitServiceProvider extends PackageServiceProvider
             function () {
                 return collect([
                     GitProvidersEnum::GITHUB->value => new GithubConnector(
-                        username: config('git.testing.github.username'),
-                        token: config('git.testing.github.token'),
+                        username: config('git.auth.github.username'),
+                        token: config('git.auth.github.token'),
                     ),
                 ]);
             }
         );
 
-        app()->bind(
-            GitProviderContract::class,
-            function ($app) {
-                return collect([
-                    GitProvidersEnum::GITHUB->value => app(GithubProvider::class),
-                ]);
-            }
-        );
-
-        app()->bind(
-            GitProviderRepositoryContract::class,
-            function ($app, $params) {
-                return collect([
-                    GitProvidersEnum::GITHUB->value => app(GithubRepository::class, $params),
-                ]);
-            }
-        );
-
-        app()->bind(
-            GitProviderUserContract::class,
-            function ($app, $params) {
-                return collect([
-                    GitProvidersEnum::GITHUB->value => app(GithubUser::class, $params),
-                ]);
-            }
-        );
-
-        app()->bind(ChangelogContract::class, Changelog::class);
+        $this->app->bind('git', function ($app) {
+            return Git::use(config('git.default.provider'));
+        });
     }
 
     private function loadConfig()
     {
-        if (! Config::has('github')) {
-            Config::set('github', require getcwd().'/vendor/graham-campbell/github/config/github.php');
-        }
-
         $this->handleNeon()->forConfig();
     }
 }

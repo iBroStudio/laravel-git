@@ -1,0 +1,33 @@
+{
+    "statusCode": 201,
+    "headers": {
+        "Date": "Thu, 22 May 2025 16:16:21 GMT",
+        "Content-Type": "application\/json; charset=utf-8",
+        "Content-Length": "2282",
+        "Cache-Control": "private, max-age=60, s-maxage=60",
+        "Vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+        "ETag": "\"98c06381b2fe57094c9790d159553008133af460b3734f2a703caa1943923973\"",
+        "X-OAuth-Scopes": "admin:enterprise, admin:gpg_key, admin:org, admin:org_hook, admin:public_key, admin:repo_hook, admin:ssh_signing_key, audit_log, codespace, copilot, delete:packages, delete_repo, gist, notifications, project, repo, user, workflow, write:discussion, write:network_configurations, write:packages",
+        "X-Accepted-OAuth-Scopes": "repo",
+        "Location": "https:\/\/api.github.com\/repos\/Yann-iBroStudio\/test\/releases\/220428086",
+        "X-GitHub-Media-Type": "github.v3; format=json",
+        "x-github-api-version-selected": "2022-11-28",
+        "X-RateLimit-Limit": "5000",
+        "X-RateLimit-Remaining": "4994",
+        "X-RateLimit-Reset": "1747932893",
+        "X-RateLimit-Used": "6",
+        "X-RateLimit-Resource": "core",
+        "Access-Control-Expose-Headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+        "Access-Control-Allow-Origin": "*",
+        "Strict-Transport-Security": "max-age=31536000; includeSubdomains; preload",
+        "X-Frame-Options": "deny",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "0",
+        "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+        "Content-Security-Policy": "default-src 'none'",
+        "Server": "github.com",
+        "X-GitHub-Request-Id": "C55D:23E0F7:D438F:D9E4D:682F4DD5"
+    },
+    "data": "{\"url\":\"https:\/\/api.github.com\/repos\/Yann-iBroStudio\/test\/releases\/220428086\",\"assets_url\":\"https:\/\/api.github.com\/repos\/Yann-iBroStudio\/test\/releases\/220428086\/assets\",\"upload_url\":\"https:\/\/uploads.github.com\/repos\/Yann-iBroStudio\/test\/releases\/220428086\/assets{?name,label}\",\"html_url\":\"https:\/\/github.com\/Yann-iBroStudio\/test\/releases\/tag\/v0.0.23\",\"id\":220428086,\"author\":{\"login\":\"Yann-iBroStudio\",\"id\":2676572,\"node_id\":\"MDQ6VXNlcjI2NzY1NzI=\",\"avatar_url\":\"https:\/\/avatars.githubusercontent.com\/u\/2676572?v=4\",\"gravatar_id\":\"\",\"url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\",\"html_url\":\"https:\/\/github.com\/Yann-iBroStudio\",\"followers_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/followers\",\"following_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/following{\/other_user}\",\"gists_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/gists{\/gist_id}\",\"starred_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/starred{\/owner}{\/repo}\",\"subscriptions_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/subscriptions\",\"organizations_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/orgs\",\"repos_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/repos\",\"events_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/events{\/privacy}\",\"received_events_url\":\"https:\/\/api.github.com\/users\/Yann-iBroStudio\/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"node_id\":\"RE_kwDOM45fWc4NI3c2\",\"tag_name\":\"v0.0.23\",\"target_commitish\":\"main\",\"name\":null,\"draft\":false,\"prerelease\":false,\"created_at\":\"2025-05-22T14:48:10Z\",\"published_at\":\"2025-05-22T16:16:21Z\",\"assets\":[],\"tarball_url\":\"https:\/\/api.github.com\/repos\/Yann-iBroStudio\/test\/tarball\/v0.0.23\",\"zipball_url\":\"https:\/\/api.github.com\/repos\/Yann-iBroStudio\/test\/zipball\/v0.0.23\",\"body\":\"* tweak laravel-git config ([7b13b2](https:\/\/github.com\/Yann-iBroStudio\/test\/commit7b13b20678164f70fce4f9ecc4d2c331b26e213d))\\n* tweak laravel-git config ([d3654a](https:\/\/github.com\/Yann-iBroStudio\/test\/commitd3654a2f06bb9d91de9c19287ee3aa59c01c3694))\\n* make scripts runnable ([5a0e59](https:\/\/github.com\/Yann-iBroStudio\/test\/commit5a0e5975b166330293b303119fba4526f56cb4f4))\\n* laravel-get.neon config file ([b66016](https:\/\/github.com\/Yann-iBroStudio\/test\/commitb660166e8da51f9ef85cf9ba92af024f4ae49492))\"}",
+    "context": []
+}

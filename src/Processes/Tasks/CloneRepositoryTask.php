@@ -1,23 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IBroStudio\Git\Processes\Tasks;
 
-use Closure;
-use IBroStudio\Git\Actions\CloneRepositoryAction;
-use IBroStudio\Git\Processes\Payloads\Contracts\RepositoryPayload;
+use Exception;
+use IBroStudio\Git\Repository;
+use IBroStudio\Tasks\Contracts\PayloadContract;
+use IBroStudio\Tasks\Exceptions\AbortTaskAndProcessException;
+use IBroStudio\Tasks\Models\Task;
+use Parental\HasParent;
 
-final readonly class CloneRepositoryTask
+class CloneRepositoryTask extends Task
 {
-    public function __construct(
-        private CloneRepositoryAction $action,
-    ) {}
+    use HasParent;
 
-    public function __invoke(RepositoryPayload $payload, Closure $next): mixed
+    /**
+     * @param  Repository  $payload
+     */
+    public function execute(PayloadContract $payload): PayloadContract|array
     {
-        $payload->setRepository(
-            $this->action->execute($payload->getRepositoryProperties())
-        );
+        try {
+            retry([3000, 5000, 5000, 10000, 20000], function () use ($payload) {
+                return Repository::clone(
+                    url: $payload->remote->url->value,
+                    localParentDirectoryPath: $payload->localParentDirectory,
+                );
+            });
+        } catch (Exception $e) {
+            throw new AbortTaskAndProcessException($this, $e->getMessage());
+        }
 
-        return $next($payload);
+        return $payload;
     }
 }

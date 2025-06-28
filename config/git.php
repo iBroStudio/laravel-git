@@ -2,13 +2,28 @@
 
 declare(strict_types=1);
 
-use IBroStudio\Git\Enums\GitCommitTypes;
+use IBroStudio\Git\Dto\OwnerDto\AuthOwnerDto;
+use IBroStudio\Git\Dto\OwnerDto\OrganizationOwnerDto;
+use IBroStudio\Git\Dto\RepositoryDto\ReleaseDto;
+use IBroStudio\Git\Enums\CommitTypeEnum;
 
 return [
 
     'default' => [
+        'provider' => IBroStudio\DataObjects\Enums\GitProvidersEnum::GITHUB,
         'branch' => 'main',
         'remote' => 'origin',
+        'owner' => [
+            'name' => env('GITHUB_USERNAME'), // env('GITHUB_ORGANIZATION')
+            'type' => AuthOwnerDto::class, // OrganizationOwnerDto::class
+        ],
+    ],
+
+    'auth' => [
+        'github' => [
+            'username' => env('GITHUB_USERNAME'),
+            'token' => env('GITHUB_TOKEN'),
+        ],
     ],
 
     'templates' => [
@@ -27,11 +42,16 @@ return [
         'type_header_tag' => '###',
         'section_delimiter' => '---',
         'included_types' => [
-            GitCommitTypes::BREAKING_CHANGES,
-            GitCommitTypes::FEAT,
-            GitCommitTypes::FIX,
-            GitCommitTypes::UNLISTED,
+            CommitTypeEnum::BREAKING_CHANGES,
+            CommitTypeEnum::FEAT,
+            CommitTypeEnum::FIX,
+            CommitTypeEnum::UNLISTED,
         ],
+    ],
+
+    'pre-commit' => [
+        'scripts' => ['analyse', 'format', 'test'],
+        'exclude' => [ReleaseDto::class],
     ],
 
     'scripts' => [
@@ -39,7 +59,9 @@ return [
             'production' => null,
             'test' => null,
         ],
-        'format-code' => [], //['composer format', 'bun run format'],
-        'test-code' => [], //['composer test'],
+        'format-code' => [], // ['composer format', 'bun run format'],
+        'test-code' => [], // ['composer test'],
     ],
+
+    'log_git_processes' => false,
 ];

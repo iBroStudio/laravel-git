@@ -1,16 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IBroStudio\Git\Processes\Tasks;
 
-use Closure;
-use IBroStudio\Git\Processes\Payloads\Contracts\RepositoryPayload;
+use Exception;
+use IBroStudio\Git\Repository;
+use IBroStudio\Tasks\Concerns\HasProcessableDto;
+use IBroStudio\Tasks\Contracts\PayloadContract;
+use IBroStudio\Tasks\Exceptions\AbortTaskAndProcessException;
+use IBroStudio\Tasks\Models\Task;
+use Parental\HasParent;
 
-final readonly class PushTask
+/**
+ * @property Repository $processable_dto
+ */
+class PushTask extends Task
 {
-    public function __invoke(RepositoryPayload $payload, Closure $next): mixed
-    {
-        $payload->getRepository()->push();
+    use HasParent;
+    use HasProcessableDto;
 
-        return $next($payload);
+    /**
+     * @param  Repository  $payload
+     */
+    public function execute(PayloadContract $payload): PayloadContract|array
+    {
+        try {
+            $this->processable_dto->push();
+        } catch (Exception $e) {
+            throw new AbortTaskAndProcessException($this, $e->getMessage());
+        }
+
+        return $payload;
+    }
+
+    protected function getProcessableDtoClass(): string
+    {
+        return Repository::class;
     }
 }

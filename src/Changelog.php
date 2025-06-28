@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IBroStudio\Git;
 
-use IBroStudio\DataRepository\ValueObjects\SemanticVersion;
-use IBroStudio\Git\Contracts\ChangelogContract;
-use IBroStudio\Git\Data\ChangelogConfigData;
-use IBroStudio\Git\Data\GitCommitData;
-use IBroStudio\Git\Data\GitReleaseData;
-use IBroStudio\Git\Enums\GitCommitTypes;
+use IBroStudio\DataObjects\ValueObjects\SemanticVersion;
+use IBroStudio\Git\Dto\ChangelogConfigDto;
+use IBroStudio\Git\Dto\RepositoryDto\CommitDto;
+use IBroStudio\Git\Dto\RepositoryDto\ReleaseDto;
+use IBroStudio\Git\Enums\CommitTypeEnum;
 use IBroStudio\Git\Exceptions\ChangelogException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
 
-final class Changelog implements ChangelogContract
+class Changelog
 {
     public const CONTENT_HEADER_KEY = 'header';
 
@@ -22,59 +23,76 @@ final class Changelog implements ChangelogContract
 
     public const SPACE = ' ';
 
-    protected GitRepository $repository;
-
-    protected ChangelogConfigData $config;
-
-    protected string $changelogFile;
-
     public Collection $content;
 
-    protected Collection $section;
+    private ChangelogConfigDto $config;
 
-    public function __construct()
+    private string $changelogFile;
+
+    private Collection $section;
+
+    public function __construct(protected Repository $repository)
     {
-        $this->config = ChangelogConfigData::from(config('git.changelog'));
-    }
+        $this->config = ChangelogConfigDto::from($this->repository->config('changelog'));
 
-    public function bind(GitRepository $repository): self
-    {
-        $this->repository = $repository;
-
-        $this->changelogFile = $this->repository->properties->path.'/'.$this->config->file;
+        $this->changelogFile = $this->repository->path.'/'.$this->config->file;
 
         $this->initContent();
 
         $this->load();
-
-        return $this;
     }
 
-    public function prepend(GitReleaseData $releaseData): bool
+    public function prepend(ReleaseDto $releaseData): bool
     {
         $this->getSection(self::CONTENT_SECTIONS_KEY)
             ->prepend(
                 value: $this->buildSection($releaseData),
-                key: $releaseData->version->withoutPrefix()->value()
+                key: $releaseData->version->withoutPrefix()
             );
 
         return $this->save();
     }
 
-    public function pick(SemanticVersion $version): ?Collection
+    public function pick(SemanticVersion|string $version): ?Collection
     {
+        if (is_string($version)) {
+            $version = SemanticVersion::from($version);
+        }
+
         return $this->getSection(self::CONTENT_SECTIONS_KEY)
-            ->get($version->withoutPrefix()->value());
+            ->get($version->withoutPrefix());
+    }
+
+    public function describe(SemanticVersion|string $version): ?string
+    {
+        if (is_string($version)) {
+            $version = SemanticVersion::from($version);
+        }
+
+        $lines = $this->pick($version)->get('lines');
+
+        if (is_null($lines)) {
+            return null;
+        }
+
+        return implode(
+            "\n",
+            $lines->filter(function (string $line) {
+                return ! empty($line) && $line !== config('git.changelog.section_delimiter');
+            })
+                ->flatten()
+                ->toArray()
+        );
     }
 
     public function rebuild(): bool
     {
         $this->initContent();
 
-        $this->repository->release()->all()
-            ->each(function (GitReleaseData $releaseData) {
+        $this->repository->releases()->all()
+            ->each(function (ReleaseDto $releaseData) {
                 $this->addToContentSections(
-                    $releaseData->gitLogBoundaries['to'] ?? $releaseData->version->withoutPrefix()->value(),
+                    $releaseData->gitLogBoundaries['to'] ?? $releaseData->version->withoutPrefix(),
                     $this->buildSection($releaseData)
                 );
             });
@@ -82,25 +100,25 @@ final class Changelog implements ChangelogContract
         return $this->save();
     }
 
-    protected function getSection(string $key): ?Collection
+    private function getSection(string $key): ?Collection
     {
         return $this->content->get($key);
     }
 
-    protected function addToContentSections($key, $value): void
+    private function addToContentSections($key, $value): void
     {
         $this->getSection(self::CONTENT_SECTIONS_KEY)
             ->put($key, $value);
     }
 
-    protected function buildSection(GitReleaseData $releaseData): Collection
+    private function buildSection(ReleaseDto $releaseData): Collection
     {
         $section = collect([
             'header' => Str::of(config('git.changelog.version_header_tag'))
                 ->append(self::SPACE)
                 ->append(
-                    Str::of($releaseData->version->withoutPrefix()->value())
-                        ->when(isset($releaseData->gitLogBoundaries),
+                    Str::of($releaseData->version->withoutPrefix())
+                        ->when(count($releaseData->gitLogBoundaries),
                             function (Stringable $string) use ($releaseData) {
                                 return $string
                                     ->wrap('[', ']')
@@ -108,7 +126,7 @@ final class Changelog implements ChangelogContract
                                         Str::of($releaseData->gitLogBoundaries['from'])
                                             ->append('...')
                                             ->append($releaseData->gitLogBoundaries['to'])
-                                            ->prepend($this->repository->properties->html_url.'/compare/')
+                                            ->prepend($this->repository->remote->toHtml('compare'))
                                             ->wrap('(', ')')
                                     );
                             })
@@ -138,9 +156,11 @@ final class Changelog implements ChangelogContract
         ]);
 
         if (isset($releaseData->gitLogBoundaries)) {
+
             $this->repository->fetch();
-            $this->repository->commit()->history(...$releaseData->gitLogBoundaries)
-                ->each(function (GitCommitData $commit) use ($section) {
+
+            $this->repository->commits()->history(...$releaseData->gitLogBoundaries)
+                ->each(function (CommitDto $commit) use ($section) {
                     $section
                         ->get('commits')
                         ->get($commit->type->value)
@@ -152,7 +172,7 @@ final class Changelog implements ChangelogContract
 
         $section->get('commits')
             ->each(function (Collection $commits, string $type) use ($section) {
-                if ($type !== GitCommitTypes::UNLISTED->value && $commits->count() < 2) {
+                if ($type !== CommitTypeEnum::UNLISTED->value && $commits->count() < 2) {
                     $section
                         ->get('commits')
                         ->pull($type);
@@ -162,7 +182,7 @@ final class Changelog implements ChangelogContract
         return $section;
     }
 
-    protected function formatSectionLine(GitCommitData $commit): string
+    private function formatSectionLine(CommitDto $commit): string
     {
         return Str::of('* ')
             ->append($commit->message)
@@ -173,7 +193,7 @@ final class Changelog implements ChangelogContract
                     ->wrap('[', ']')
                     ->append(
                         Str::of($commit->hash)
-                            ->prepend($this->repository->properties->html_url.'/commit/')
+                            ->prepend($this->repository->remote->toHtml('commit'))
                             ->wrap('(', ')')
                     )
                     ->wrap('(', ')')
@@ -181,7 +201,7 @@ final class Changelog implements ChangelogContract
             ->toString();
     }
 
-    protected function initContent(): void
+    private function initContent(): void
     {
         $this->content = collect([
             self::CONTENT_HEADER_KEY => $this->config->header,
@@ -189,7 +209,7 @@ final class Changelog implements ChangelogContract
         ]);
     }
 
-    protected function load(): bool
+    private function load(): bool
     {
         if (! File::exists($this->changelogFile)) {
             return false;
@@ -219,7 +239,7 @@ final class Changelog implements ChangelogContract
         return true;
     }
 
-    protected function save(): bool
+    private function save(): bool
     {
         if (
             ! File::put(

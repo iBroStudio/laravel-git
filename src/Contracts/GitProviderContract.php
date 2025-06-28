@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IBroStudio\Git\Contracts;
 
-use IBroStudio\Git\Data\RepositoryData;
+use IBroStudio\Git\Dto\RepositoryDto;
 
 interface GitProviderContract
 {
@@ -10,5 +12,5 @@ interface GitProviderContract
 
     public function user(): GitProviderUserContract;
 
-    public function repository(RepositoryData $properties): GitProviderRepositoryContract;
+    public function repository(RepositoryDto $properties): GitProviderRepositoryContract;
 }
