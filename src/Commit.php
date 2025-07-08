@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Process;
 use Illuminate\Support\LazyCollection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
+use RuntimeException;
 
 class Commit
 {
@@ -37,7 +38,7 @@ class Commit
         );
     }
 
-    public function history(?string $from = null, ?string $to = null, $types_filtered = true): LazyCollection
+    public function history(?string $from = null, ?string $to = null, $types_filtered = true): ?LazyCollection
     {
         $command = Str::of("cd {$this->repository->path} && git log ")
             ->when(! is_null($from), function (Stringable $string) use ($from) {
@@ -52,17 +53,23 @@ class Commit
 
         $history = LazyCollection::make(function () use ($command) {
             $handle = popen($command, 'r');
+            if ($handle === false) {
+                throw new RuntimeException("Failed to execute command: $command");
+            }
+
             while (($line = fgets($handle)) !== false) {
                 yield $line;
             }
-            pclose($handle);
-        })
-            ->map(function (string $line) {
-                return Str::trim($line);
-            })
-            ->filter(function (string $line) {
-                return ! empty($line);
-            })
+
+            $exitCode = pclose($handle);
+            if ($exitCode !== 0) {
+                return null;
+            }
+        });
+
+        return $history
+            ->map(fn (string $line) => Str::trim($line))
+            ->filter(fn (string $line) => ! empty($line))
             ->chunk(4)
             ->map(function (LazyCollection $lines) {
                 $values = array_values($lines->toArray());
@@ -74,10 +81,6 @@ class Commit
                     'message' => Str::of($values[3])->trim()->toString(),
                 ]);
             })
-            ->filter(function (CommitDto $commitData) use ($types_filtered) {
-                return ! $types_filtered || in_array($commitData->type, config('git.changelog.included_types'));
-            });
-
-        return $history;
+            ->filter(fn (CommitDto $commitData) => ! $types_filtered || in_array($commitData->type, config('git.changelog.included_types')));
     }
 }

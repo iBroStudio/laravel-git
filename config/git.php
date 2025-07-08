@@ -17,6 +17,9 @@ return [
             'name' => env('GITHUB_USERNAME'), // env('GITHUB_ORGANIZATION')
             'type' => AuthOwnerDto::class, // OrganizationOwnerDto::class
         ],
+        'version' => [
+            'prefix' => 'v.',
+        ],
     ],
 
     'auth' => [

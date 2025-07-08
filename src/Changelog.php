@@ -160,7 +160,7 @@ class Changelog
             $this->repository->fetch();
 
             $this->repository->commits()->history(...$releaseData->gitLogBoundaries)
-                ->each(function (CommitDto $commit) use ($section) {
+                ?->each(function (CommitDto $commit) use ($section) {
                     $section
                         ->get('commits')
                         ->get($commit->type->value)

@@ -30,7 +30,6 @@ class BumpVersionInDependenciesFilesTask extends Task
     public function execute(PayloadContract $payload): PayloadContract|array
     {
         try {
-
             DependenciesJsonFile::collectionFromPath($this->processable_dto->path)
                 ->each(function (DependenciesJsonFile $file) use ($payload) {
                     $file->version($payload->version);
@@ -41,7 +40,7 @@ class BumpVersionInDependenciesFilesTask extends Task
                 return $payload->updateDto([
                     'commit' => CommitDto::from(
                         CommitTypeEnum::CHORE,
-                        "bump version {$payload->version->withoutPrefix()} in files"
+                        "bump version to {$payload->version->withoutPrefix()}"
                     ),
                 ]);
             }

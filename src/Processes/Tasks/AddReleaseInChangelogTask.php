@@ -41,7 +41,7 @@ class AddReleaseInChangelogTask extends Task
                         CommitTypeEnum::CHORE,
                         'update CHANGELOG'
                     ),
-                    'description' => $changelog->describe($payload->version),
+                    'description' => $changelog->describe($payload->version) ?? $payload->version->withoutPrefix(),
                 ]);
             }
 
