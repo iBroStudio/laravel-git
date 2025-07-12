@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use IBroStudio\DataObjects\ValueObjects\GitSshUrl;
 use IBroStudio\DataObjects\ValueObjects\SemanticVersion;
 use IBroStudio\Git\Dto\RepositoryDto;
+use IBroStudio\Git\Facades\Git;
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\Repository\Releases\CreateGithubReleaseRequest;
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\Repository\Releases\GetGithubLatestReleaseRequest;
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\Repository\Releases\GetGithubReleaseByTagRequest;
@@ -59,6 +61,20 @@ it('can return the latest release', function (GithubAuthResource|GithubOrganizat
     fn () => githubConnector()->auth(),
     fn () => githubConnector()->organizations('iBroStudio'),
 ]);
+
+it('can return the latest release from a git url', function () {
+    Saloon::fake([
+        GetGithubLatestReleaseRequest::class => MockResponse::fixture('github/get_repository_latest_release'),
+    ]);
+
+    $release = Git::request(
+        new GetGithubLatestReleaseRequest(
+            url: GitSshUrl::from('git@github.com:iBroStudio/laravel-git.git')
+        )
+    )->dto();
+
+    expect($release)->toBeInstanceOf(RepositoryDto\ReleaseDto::class);
+});
 
 it('can return a release', function (GithubAuthResource|GithubOrganizationResource $resource) {
     Saloon::fake([

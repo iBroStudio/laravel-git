@@ -105,6 +105,11 @@ class GithubConnector extends Connector implements GitProviderConnectorContract,
         return new GithubUserResource($this, $user_name);
     }
 
+    public function request(Request $request): Response
+    {
+        return $this->send($request);
+    }
+
     protected function defaultHeaders(): array
     {
         return [

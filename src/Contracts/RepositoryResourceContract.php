@@ -12,6 +12,8 @@ interface RepositoryResourceContract
 {
     public function all(): Collection|LazyCollection;
 
+    public function byTopics(array $topics): Collection|LazyCollection;
+
     public function get(): Repository;
 
     public function create(): Repository;

@@ -11,7 +11,7 @@ use IBroStudio\Git\Repository;
 use IBroStudio\Git\Tests\TestCase;
 use Saloon\Config;
 
-Config::preventStrayRequests();
+// Config::preventStrayRequests();
 
 pest()->printer()->compact();
 

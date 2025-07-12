@@ -42,8 +42,8 @@ class ReleaseDto extends DefaultProcessPayloadDTO
         $data = $response->json();
 
         return self::from([
-            'version' => $data['tag_name'],
-            'published_at' => $data['published_at'],
+            'version' => data_get($data, 'tag_name', '0.0.0'),
+            'published_at' => data_get($data, 'published_at', null),
         ]);
     }
 
