@@ -7,6 +7,7 @@ use IBroStudio\DataObjects\ValueObjects\GitSshUrl;
 use IBroStudio\Git\Dto\OwnerDto\AuthOwnerDto;
 use IBroStudio\Git\Dto\OwnerDto\OrganizationOwnerDto;
 use IBroStudio\Git\Dto\RepositoryDto\ConfigDto\RemoteDto;
+use IBroStudio\Git\Enums\GitRepositoryTopicsEnum;
 use IBroStudio\Git\Enums\GitRepositoryVisibilitiesEnum;
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\GetGithubAuthRepositoriesRequest;
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\GetGithubOrganizationRepositoriesRequest;
@@ -125,3 +126,14 @@ it('can create a repository from a template', function (GithubAuthResource|Githu
     fn () => githubConnector()->auth(),
     fn () => githubConnector()->organizations('iBroStudio'),
 ]);
+
+it('can fetch repositories by topics', function () {
+    Saloon::fake([
+        GetGithubAuthRepositoriesRequest::class => MockResponse::fixture('github/get_authenticated_user_repositories'),
+    ]);
+
+    $repositories = githubConnector()->auth()->repositories()->byTopics([GitRepositoryTopicsEnum::TEMPLATE]);
+
+    expect($repositories)->toBeInstanceOf(LazyCollection::class)
+        ->and($repositories->first())->toBeInstanceOf(Repository::class);
+});

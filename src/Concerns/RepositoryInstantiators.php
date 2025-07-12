@@ -54,6 +54,7 @@ trait RepositoryInstantiators
             visibility: GitRepositoryVisibilitiesEnum::from($data['visibility']),
             new: Optional::create(),
             commit: Optional::create(),
+            topics: $data['topics']
         );
     }
 
@@ -68,6 +69,7 @@ trait RepositoryInstantiators
                 'owner' => $data['owner']['login'],
                 'localParentDirectory' => Optional::create(),
                 'visibility' => GitRepositoryVisibilitiesEnum::from($data['visibility']),
+                'topics' => $data['topics'],
             ]);
         });
     }

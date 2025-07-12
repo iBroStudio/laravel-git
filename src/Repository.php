@@ -53,6 +53,7 @@ class Repository extends ProcessableDto implements CommittableContract, PayloadC
         public GitRepositoryVisibilitiesEnum|Optional $visibility,
         public NewDto|Optional $new,
         public CommitDto|Optional $commit,
+        public array $topics = [],
         public ?string $path = null,
         public ?GitSshUrl $template = null,
     ) {

@@ -10,6 +10,7 @@ use IBroStudio\Git\Contracts\RepositoryResourceContract;
 use IBroStudio\Git\Dto\OwnerDto\AuthOwnerDto;
 use IBroStudio\Git\Dto\OwnerDto\OrganizationOwnerDto;
 use IBroStudio\Git\Dto\OwnerDto\UserOwnerDto;
+use IBroStudio\Git\Enums\GitRepositoryTopicsEnum;
 use IBroStudio\Git\Integrations\Github\GithubConnector;
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\GetGithubAuthRepositoriesRequest;
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\GetGithubOrganizationRepositoriesRequest;
@@ -19,6 +20,7 @@ use IBroStudio\Git\Integrations\Github\Requests\Repositories\Repository\CreateGi
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\Repository\CreateGithubRepositoryFromTemplateRequest;
 use IBroStudio\Git\Integrations\Github\Requests\Repositories\Repository\GetGithubRepositoryRequest;
 use IBroStudio\Git\Repository;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
 use Saloon\Http\BaseResource;
@@ -46,6 +48,15 @@ class GithubRepositoryResource extends BaseResource implements RepositoryResourc
         };
 
         return $this->connector->paginate($request)->collect();
+    }
+
+    public function byTopics(array $topics): Collection|LazyCollection
+    {
+        $topics = Arr::map($topics, fn (string|GitRepositoryTopicsEnum $topic): string => $topic instanceof GitRepositoryTopicsEnum ? $topic->value : $topic
+        );
+
+        return $this->all()
+            ->filter(fn (Repository $repository) => count(array_intersect($repository->topics, $topics)) > 0);
     }
 
     public function get(): Repository
